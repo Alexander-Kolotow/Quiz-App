@@ -11,7 +11,7 @@ const quizSchema = new mongoose.Schema({
   },
   selectedOption: {
     type: Number,
-    default: -1
+    default: null
   },
   answered: {
     type: Boolean,
