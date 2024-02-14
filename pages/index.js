@@ -52,14 +52,18 @@ const HomePage = () => {
   const [toastType, setToastType] = useState('');
 
   useEffect(() => {
-    // Fetch quiz data from MongoDB and update quizData state
-    // Replace the fetchQuizData function with your own implementation
     const fetchQuizData = async () => {
       try {
-        const response = await fetch('/api/quiz');
-        const data = await response.json();
-        setQuizData(data);
+        const response = await fetch(`/api/quizzes`);
+        if (response.ok && response.headers.get('Content-Type')?.includes('application/json')) {
+          const data = await response.json();
+          setQuizData(data);
+        } else {
+          // Logge den Status und StatusText, wenn die Antwort nicht ok ist oder nicht JSON enthält
+          console.error('Failed to fetch quiz data:', response.status, response.statusText);
+        }
       } catch (error) {
+        // Fange Netzwerkfehler und andere Fehler beim Fetch-Aufruf ab
         console.error('Failed to fetch quiz data:', error);
       }
     };

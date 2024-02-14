@@ -1,40 +1,47 @@
-import { dbConnect } from "../../../db/connect";
+import Quiz from '../../../models/Quiz';
+import { dbConnect } from "../../../db/connect"; 
 
 export default async function handler(req, res) {
+
   const { method } = req;
   const { id } = req.query;
 
-  const { db } = await dbConnect();
+  // Stelle eine Verbindung zur DB her, wenn noch nicht geschehen
+  await dbConnect();
 
   switch (method) {
     case "GET":
       try {
-        const quiz = await db.collection("quizzes").findOne({ _id: id });
+        // Verwende Mongoose-Modell zum Finden eines Dokuments
+        const quiz = await Quiz.findById(id);
+        if (!quiz) {
+          return res.status(404).json({ message: "Quiz not found" });
+        }
         res.status(200).json(quiz);
       } catch (error) {
-        res.status(500).json({ message: "Error retrieving quiz" });
+        res.status(500).json({ message: "Error retrieving quiz", error: error.message });
       }
       break;
     case "POST":
       try {
-        const { name, questions } = req.body;
-        const newQuiz = { name, questions };
-        const result = await db.collection("quizzes").insertOne(newQuiz);
-        res.status(201).json(result.ops[0]);
+        // Erstelle ein neues Quiz mit dem Mongoose-Modell
+        const newQuiz = new Quiz(req.body);
+        const result = await newQuiz.save();
+        res.status(201).json(result);
       } catch (error) {
-        res.status(500).json({ message: "Error creating quiz" });
+        res.status(500).json({ message: "Error creating quiz", error: error.message });
       }
       break;
     case "PUT":
       try {
-        const { name, questions } = req.body;
-        const updatedQuiz = { name, questions };
-        const result = await db
-          .collection("quizzes")
-          .updateOne({ _id: id }, { $set: updatedQuiz });
+        // Aktualisiere ein Quiz-Dokument mit Mongoose
+        const result = await Quiz.findByIdAndUpdate(id, req.body, { new: true });
+        if (!result) {
+          return res.status(404).json({ message: "Quiz not found" });
+        }
         res.status(200).json(result);
       } catch (error) {
-        res.status(500).json({ message: "Error updating quiz" });
+        res.status(500).json({ message: "Error updating quiz", error: error.message });
       }
       break;
     default:
