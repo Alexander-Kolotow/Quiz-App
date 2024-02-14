@@ -48,27 +48,23 @@ const HomePage = () => {
 
   const [quizData, setQuizData] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [selectedOption, setSelectedOption] = useState('');
+  const [selectedOption, setSelectedOption] = useState(null);
   const [showToast, setShowToast] = useState(false);
   const [toastType, setToastType] = useState('');
 
   useEffect(() => {
-    const fetchQuizData = async () => {
+    async function fetchQuizData() {
       try {
-        const response = await fetch(`/api/quizzes`);
-        const text = await response.text(); // Get the response as text
-        console.log('Response:', text); // Log the entire response
-        if (response.ok && response.headers.get('Content-Type')?.includes('application/json')) {
-          const data = JSON.parse(text); // Parse the text as JSON
-          setQuizData(data);
-        } else {
-          console.error('Failed to fetch quiz data:', response.status, response.statusText);
-        }
+        const response = await fetch(`/api/quiz`);
+        if (!response.ok) throw new Error(`Error: ${response.status}`);
+
+        const data = await response.json(); // Direktes Parsen der JSON-Antwort
+        setQuizData(data);
       } catch (error) {
-        console.error('Failed to fetch quiz data:', error);
+        console.error('Failed to fetch quiz data:', error.message);
       }
-    };
-  
+    }
+
     fetchQuizData();
   }, []);
 
