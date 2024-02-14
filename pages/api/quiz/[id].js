@@ -1,4 +1,4 @@
-import Quiz from '../../../models/Quiz';
+import Quiz from "../../../db/models/Quiz";
 import { dbConnect } from "../../../db/connect"; 
 
 export default async function handler(req, res) {
