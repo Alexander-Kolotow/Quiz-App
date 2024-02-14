@@ -71,11 +71,11 @@ const HomePage = () => {
     fetchQuizData();
   }, []);
 
-  const handleOptionSelect = (option, index) => {
+  const handleOptionSelect = (option) => {
     let updatedQuizData = [...quizData];
     updatedQuizData[currentQuestion].selectedOption = option;
     setQuizData(updatedQuizData);
-    setSelectedOption(index);
+    setSelectedOption(option);
   };
 
   const handleCheckAnswer = () => {
@@ -127,7 +127,7 @@ const HomePage = () => {
           </Option>
         ))}
 
-        <button onClick={handleCheckAnswer} disabled={selectedOption === ''}>
+        <button onClick={handleCheckAnswer} disabled={!quizData[currentQuestion]?.options.includes(selectedOption)}>
           Check Answer
         </button>
       </QuizCard>
