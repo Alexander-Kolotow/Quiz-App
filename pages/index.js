@@ -45,6 +45,7 @@ const NextButton = styled.button`
 `;
 
 const HomePage = () => {
+
   const [quizData, setQuizData] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedOption, setSelectedOption] = useState('');
@@ -55,19 +56,19 @@ const HomePage = () => {
     const fetchQuizData = async () => {
       try {
         const response = await fetch(`/api/quizzes`);
+        const text = await response.text(); // Get the response as text
+        console.log('Response:', text); // Log the entire response
         if (response.ok && response.headers.get('Content-Type')?.includes('application/json')) {
-          const data = await response.json();
+          const data = JSON.parse(text); // Parse the text as JSON
           setQuizData(data);
         } else {
-          // Logge den Status und StatusText, wenn die Antwort nicht ok ist oder nicht JSON enthält
           console.error('Failed to fetch quiz data:', response.status, response.statusText);
         }
       } catch (error) {
-        // Fange Netzwerkfehler und andere Fehler beim Fetch-Aufruf ab
         console.error('Failed to fetch quiz data:', error);
       }
     };
-
+  
     fetchQuizData();
   }, []);
 
