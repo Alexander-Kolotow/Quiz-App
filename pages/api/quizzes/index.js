@@ -1,5 +1,5 @@
 import dbConnect from "../../../db/connect";
-import Quiz from "../../../../models/Quiz";
+import Quiz from "../../../db/models/Quiz";
 
 export default async function handler(req, res) {
   // Stelle sicher, dass die Datenbankverbindung steht

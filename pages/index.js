@@ -71,14 +71,18 @@ const HomePage = () => {
     fetchQuizData();
   }, []);
 
-  const handleOptionSelect = (option) => {
-    setSelectedOption(option);
+  const handleOptionSelect = (option, index) => {
+    let updatedQuizData = [...quizData];
+    updatedQuizData[currentQuestion].selectedOption = option;
+    setQuizData(updatedQuizData);
+    setSelectedOption(index);
   };
 
   const handleCheckAnswer = () => {
-    const correctAnswer = quizData[currentQuestion].correctAnswer;
-
-    if (selectedOption === correctAnswer) {
+    const correctAnswerIndex = quizData[currentQuestion].correctOption;
+    const correctAnswer = quizData[currentQuestion].options[correctAnswerIndex];
+  
+    if (quizData[currentQuestion].selectedOption === correctAnswer) {
       setShowToast(true);
       setToastType('correct');
     } else {
@@ -112,12 +116,12 @@ const HomePage = () => {
       <QuizCard>
         <Question>{quizData[currentQuestion]?.question}</Question>
 
-        {quizData[currentQuestion]?.options.map((option) => (
+        {quizData[currentQuestion]?.options.map((option, index) => (
           <Option
             key={option}
-            onClick={() => handleOptionSelect(option)}
-            disabled={selectedOption !== ''}
-            style={{ backgroundColor: selectedOption === option ? 'blue' : 'inherit' }}
+            onClick={() => handleOptionSelect(option, index)}
+            disabled={quizData[currentQuestion].selectedOption !== ''}
+            style={{ backgroundColor: quizData[currentQuestion].selectedOption === option ? 'blue' : 'inherit' }}
           >
             {option}
           </Option>

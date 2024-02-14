@@ -10,8 +10,12 @@ const quizSchema = new mongoose.Schema({
     required: true
   },
   selectedOption: {
-    type: Number,
+    type: String,
     default: null
+  },
+  correctOption: {
+    type: Number,
+    required: true
   },
   answered: {
     type: Boolean,
