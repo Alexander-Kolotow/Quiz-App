@@ -1,7 +1,15 @@
 import Quiz from "../../../db/models/Quiz";
 import dbConnect from "../../../db/connect";
+import nextCors from 'nextjs-cors'; // Importiere nextjs-cors
 
 export default async function handler(req, res) {
+
+  // CORS Konfiguration hier
+  await nextCors(req, res, {
+    origin: 'https://quiz-app-xi-umber.vercel.app/', // Setze hier die origin deiner Frontend-App
+    methods: ['GET', 'POST', 'PUT'], // Erlaubte Methoden
+    allowHeaders: ['Content-Type'], // Erlaubte Header
+  });
 
   const { method } = req;
   const { id } = req.query;
@@ -12,7 +20,6 @@ export default async function handler(req, res) {
   switch (method) {
     case "GET":
       try {
-        // Verwende Mongoose-Modell zum Finden eines Dokuments
         const quiz = await Quiz.findById(id);
         if (!quiz) {
           return res.status(404).json({ message: "Quiz not found" });
@@ -24,7 +31,6 @@ export default async function handler(req, res) {
       break;
     case "POST":
       try {
-        // Erstelle ein neues Quiz mit dem Mongoose-Modell
         const newQuiz = new Quiz(req.body);
         const result = await newQuiz.save();
         res.status(201).json(result);
@@ -34,7 +40,6 @@ export default async function handler(req, res) {
       break;
     case "PUT":
       try {
-        // Aktualisiere ein Quiz-Dokument mit Mongoose
         const result = await Quiz.findByIdAndUpdate(id, req.body, { new: true });
         if (!result) {
           return res.status(404).json({ message: "Quiz not found" });
