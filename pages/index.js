@@ -50,7 +50,7 @@ const fetcher = (...args) => fetch(...args).then(res => res.json());
 
 const HomePage = () => {
 
-  const { data: quizData, error } = useSWR(`/api/quiz`, fetcher);
+  const { data: quizData, error } = useSWR(`/api/quizzes`, fetcher);
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
@@ -63,7 +63,6 @@ const HomePage = () => {
   const handleOptionSelect = (option) => {
     let updatedQuizData = [...quizData];
     updatedQuizData[currentQuestion].selectedOption = option;
-    // Da useSWR einen Cache verwendet, sollten wir den State nicht direkt aktualisieren
     setSelectedOption(option);
   };
 
