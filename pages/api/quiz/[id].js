@@ -1,15 +1,8 @@
 import Quiz from "../../../db/models/Quiz";
 import dbConnect from "../../../db/connect";
-import nextCors from 'nextjs-cors'; // Importiere nextjs-cors
+
 
 export default async function handler(req, res) {
-
-  // CORS Konfiguration hier
-  await nextCors(req, res, {
-    origin: 'https://quiz-app-xi-umber.vercel.app/', // Setze hier die origin deiner Frontend-App
-    methods: ['GET', 'POST', 'PUT'], // Erlaubte Methoden
-    allowHeaders: ['Content-Type'], // Erlaubte Header
-  });
 
   const { method } = req;
   const { id } = req.query;

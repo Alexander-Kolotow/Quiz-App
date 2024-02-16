@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
+import useSWR from 'swr';
 
 const Container = styled.div`
   text-align: center;
@@ -44,34 +45,25 @@ const NextButton = styled.button`
   margin-left: 10px;
 `;
 
-const HomePage = () => {
+// Funktion zum Datenholen
+const fetcher = (...args) => fetch(...args).then(res => res.json());
 
-  const [quizData, setQuizData] = useState([]);
+const HomePage = () => {
+  
+  const { data: quizData, error } = useSWR(`/api/quiz`, fetcher);
+
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
   const [showToast, setShowToast] = useState(false);
   const [toastType, setToastType] = useState('');
 
-  useEffect(() => {
-    async function fetchQuizData() {
-      try {
-        const response = await fetch(`/api/quiz`);
-        if (!response.ok) throw new Error(`Error: ${response.status}`);
-
-        const data = await response.json(); // Direktes Parsen der JSON-Antwort
-        setQuizData(data);
-      } catch (error) {
-        console.error('Failed to fetch quiz data:', error.message);
-      }
-    }
-
-    fetchQuizData();
-  }, []);
+  if (error) return <div>Failed to load</div>;
+  if (!quizData) return <div>Loading...</div>;
 
   const handleOptionSelect = (option) => {
     let updatedQuizData = [...quizData];
     updatedQuizData[currentQuestion].selectedOption = option;
-    setQuizData(updatedQuizData);
+    // Da useSWR einen Cache verwendet, sollten wir den State nicht direkt aktualisieren
     setSelectedOption(option);
   };
 
