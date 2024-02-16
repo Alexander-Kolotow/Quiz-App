@@ -50,7 +50,7 @@ const fetcher = (...args) => fetch(...args).then(res => res.json());
 
 const HomePage = () => {
 
-  const { data: quizData, error } = useSWR(`https://quiz-app-xi-umber.vercel.app/api/quiz`, fetcher);
+  const { data: quizData, error } = useSWR(`/api/quiz`, fetcher);
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
