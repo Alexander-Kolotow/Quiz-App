@@ -55,7 +55,7 @@ const HomePage = () => {
   useEffect(() => {
     async function fetchQuizData() {
       try {
-        const response = await fetch(`/api/quiz`);
+        const response = await fetch(`http://localhost:3000/api/quiz`);
         if (!response.ok) throw new Error(`Error: ${response.status}`);
 
         const data = await response.json(); // Direktes Parsen der JSON-Antwort
