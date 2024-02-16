@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import useSWR from 'swr';
+import { mutate } from 'swr';
+
 
 const Container = styled.div`
   text-align: center;
