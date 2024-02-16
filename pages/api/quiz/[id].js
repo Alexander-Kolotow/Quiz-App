@@ -1,9 +1,7 @@
 import Quiz from "../../../db/models/Quiz";
 import dbConnect from "../../../db/connect";
 
-
 export default async function handler(req, res) {
-
   const { method } = req;
   const { id } = req.query;
 
@@ -22,15 +20,6 @@ export default async function handler(req, res) {
         res.status(500).json({ message: "Error retrieving quiz", error: error.message });
       }
       break;
-    case "POST":
-      try {
-        const newQuiz = new Quiz(req.body);
-        const result = await newQuiz.save();
-        res.status(201).json(result);
-      } catch (error) {
-        res.status(500).json({ message: "Error creating quiz", error: error.message });
-      }
-      break;
     case "PUT":
       try {
         const result = await Quiz.findByIdAndUpdate(id, req.body, { new: true });
@@ -43,7 +32,8 @@ export default async function handler(req, res) {
       }
       break;
     default:
-      res.setHeader("Allow", ["GET", "POST", "PUT"]);
+      // Aktualisiere den "Allow"-Header, um nur "GET" und "PUT" Methoden zu erlauben
+      res.setHeader("Allow", ["GET", "PUT"]);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 }
