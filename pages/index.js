@@ -48,6 +48,23 @@ const NextButton = styled.button`
 // Funktion zum Datenholen
 const fetcher = (...args) => fetch(...args).then(res => res.json());
 
+const updateQuizStatus = async (id, answered) => {
+  
+  const response = await fetch(`/api/quizzes/${id}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ answered }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to update quiz status');
+  }
+
+  return response.json();
+};
+
 const HomePage = () => {
 
   const { data: quizData, error } = useSWR(`/api/quizzes`, fetcher);
@@ -61,28 +78,37 @@ const HomePage = () => {
   if (!quizData) return <div>Loading...</div>;
 
   const handleOptionSelect = (option) => {
-    let updatedQuizData = [...quizData];
-    updatedQuizData[currentQuestion].selectedOption = option;
-    setSelectedOption(option);
+    if (!quizData[currentQuestion].answered) {
+      setSelectedOption(option);
+    }
   };
 
-  const handleCheckAnswer = () => {
+  const handleCheckAnswer = async () => {
     const correctAnswerIndex = quizData[currentQuestion].correctOption;
     const correctAnswer = quizData[currentQuestion].options[correctAnswerIndex];
   
-    if (quizData[currentQuestion].selectedOption === correctAnswer) {
+    if (selectedOption === correctAnswer) {
       setShowToast(true);
       setToastType('correct');
     } else {
       setShowToast(true);
       setToastType('wrong');
     }
+    try {
+      await updateQuizStatus(quizData[currentQuestion]._id, true);
+      const updatedQuizData = [...quizData];
+      updatedQuizData[currentQuestion].answered = true; 
+    
+      mutate(`/api/quizzes`, updatedQuizData, false); 
+    } catch (error) {
+      console.error("Failed to update quiz status", error);
+    }
   };
 
   const handlePreviousQuestion = () => {
     if (currentQuestion > 0) {
       setCurrentQuestion(currentQuestion - 1);
-      setSelectedOption('');
+      setSelectedOption(null);
       setShowToast(false);
     }
   };
@@ -90,7 +116,7 @@ const HomePage = () => {
   const handleNextQuestion = () => {
     if (currentQuestion < quizData.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
-      setSelectedOption('');
+      setSelectedOption(null);
       setShowToast(false);
     }
   };
@@ -106,16 +132,16 @@ const HomePage = () => {
 
         {quizData[currentQuestion]?.options.map((option, index) => (
           <Option
-            key={option}
-            onClick={() => handleOptionSelect(option, index)}
-            disabled={quizData[currentQuestion].selectedOption !== ''}
-            style={{ backgroundColor: quizData[currentQuestion].selectedOption === option ? 'blue' : 'inherit' }}
+            key={index}
+            onClick={() => handleOptionSelect(option)}
+            disabled={quizData[currentQuestion].answered}
+            style={{ backgroundColor: selectedOption === option ? 'blue' : '#eee' }}
           >
             {option}
           </Option>
         ))}
 
-        <button onClick={handleCheckAnswer} disabled={!quizData[currentQuestion]?.options.includes(selectedOption)}>
+        <button onClick={handleCheckAnswer} disabled={!selectedOption || quizData[currentQuestion].answered}>
           Check Answer
         </button>
       </QuizCard>
@@ -124,7 +150,7 @@ const HomePage = () => {
         <PreviousButton onClick={handlePreviousQuestion} disabled={currentQuestion === 0}>
           Previous
         </PreviousButton>
-        <NextButton onClick={handleNextQuestion} disabled={currentQuestion === quizData.length - 1}>
+        <NextButton onClick={handleNextQuestion} disabled={currentQuestion >= quizData.length - 1}>
           Next
         </NextButton>
       </div>
