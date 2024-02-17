@@ -67,6 +67,21 @@ const updateQuizStatus = async (id, answered) => {
   return response.json();
 };
 
+const resetQuizStatus = async () => {
+  const response = await fetch(`/api/quizzes/`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to reset quiz status');
+  }
+
+  return response.json();
+};
+
 const HomePage = () => {
 
   const { data: quizData, error } = useSWR(`/api/quizzes`, fetcher);
@@ -107,6 +122,20 @@ const HomePage = () => {
     }
   };
 
+  // Hier resetten wir den Quiz-Status
+  const handleResetQuiz = async () => {
+    try {
+      await resetQuizStatus();
+      const updatedQuizData = quizData.map(quiz => ({ ...quiz, answered: false }));
+      mutate(`/api/quizzes`, updatedQuizData, false);
+      setCurrentQuestion(0);
+      setSelectedOption(null);
+      setShowToast(false);
+    } catch (error) {
+      console.error("Failed to reset quiz status", error);
+    }
+  };
+
   const handlePreviousQuestion = () => {
     if (currentQuestion > 0) {
       setCurrentQuestion(currentQuestion - 1);
@@ -125,6 +154,8 @@ const HomePage = () => {
 
   return (
     <Container>
+      <button onClick={handleResetQuiz}>&#10227;</button>
+
       <Header>My Quiz App</Header>
 
       {showToast && <Toast type={toastType}>{toastType === 'correct' ? 'Correct!' : 'Wrong!'}</Toast>}
@@ -138,22 +169,23 @@ const HomePage = () => {
             onClick={() => handleOptionSelect(option)}
             disabled={quizData[currentQuestion].answered}
             style={{ backgroundColor: selectedOption === option ? 'blue' : '#eee' }}
+            title={quizData[currentQuestion].answered ? "Already answered" : ""}
           >
             {option}
           </Option>
         ))}
 
-        <button onClick={handleCheckAnswer} disabled={!selectedOption || quizData[currentQuestion].answered}>
+        <button onClick={handleCheckAnswer} disabled={!selectedOption || quizData[currentQuestion].answered} title={quizData[currentQuestion].answered ? "Already answered" : ""}>
           Check Answer
         </button>
       </QuizCard>
 
       <div>
         <PreviousButton onClick={handlePreviousQuestion} disabled={currentQuestion === 0}>
-          Previous
+         &larr;
         </PreviousButton>
         <NextButton onClick={handleNextQuestion} disabled={currentQuestion >= quizData.length - 1}>
-          Next
+         &rarr;
         </NextButton>
       </div>
     </Container>

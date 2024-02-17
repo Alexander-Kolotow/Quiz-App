@@ -23,9 +23,19 @@ export default async function handler(req, res) {
         res.status(400).json({ message: "Fehler beim Erstellen des Quiz", error: error.message });
       }
       break;
-    default:
-      // Aktualisiere den 'Allow'-Header, um 'GET' und 'POST' zu unterstützen
-      res.setHeader('Allow', ['GET', 'POST']);
+      case 'PATCH':
+      try {
+      const result = await Quiz.updateMany({}, { $set: { answered: false } });
+      if (!result) {
+      return res.status(404).json({ message: "Quizzes not found" });
+      }
+      res.status(200).json(result);
+      } catch (error) {
+     res.status(500).json({ message: "Error resetting quizzes", error: error.message });
+      }
+      break;
+      default:    
+      res.setHeader('Allow', ['GET', 'POST', 'PATCH']);
       res.status(405).end(`Methode ${req.method} nicht erlaubt`);
   }
 }
