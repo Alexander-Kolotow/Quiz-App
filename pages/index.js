@@ -122,8 +122,9 @@ const HomePage = () => {
     }
   };
 
-  // Hier resetten wir den Quiz-Status
-  const handleResetQuiz = async () => {
+const handleResetQuiz = async () => {
+  const confirmReset = window.confirm('Are you sure you want to reset all Quiz Cards? Accordingly, your statistics will be reset to 0, and you will start the quiz from the beginning.');
+  if (confirmReset) {
     try {
       await resetQuizStatus();
       const updatedQuizData = quizData.map(quiz => ({ ...quiz, answered: false }));
@@ -134,7 +135,8 @@ const HomePage = () => {
     } catch (error) {
       console.error("Failed to reset quiz status", error);
     }
-  };
+  }
+};
 
   const handlePreviousQuestion = () => {
     if (currentQuestion > 0) {
