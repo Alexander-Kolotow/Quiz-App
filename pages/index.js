@@ -52,7 +52,7 @@ const CheckAnswerButton = styled.button`
   font-size: 16px;
   transition: background-color 0.3s, transform 0.2s;
   opacity: ${(props) => (props.isAnswered ? 0.5 : 1)};
-  pointer-events: ${(props) => (props.isAnswered ? 'none' : 'auto')};
+  pointer-events: ${(props) => (props.isanswered ? 'none' : 'auto')};
 
   &:hover {
     background-color: #43A047; 
@@ -88,7 +88,7 @@ const Option = styled.button`
   margin: 10px;
   padding: 10px 20px;
   background-color: whitesmoke;
-  border: ${(props) => (props.selected && !props.isAnswered ? '4px solid #006400' : '2px solid #217aff')};
+  border: ${(props) => (props.selected && !props.isanswered ? '4px solid #006400' : '2px solid #217aff')};
   border-radius: 20px;
   cursor: pointer;
   font-size: 16px;
@@ -103,7 +103,7 @@ const Option = styled.button`
   &:disabled {
     opacity: 0.5;
     cursor: default;
-    pointer-events: ${(props) => (props.isAnswered ? 'none' : 'auto')};
+    pointer-events: ${(props) => (props.isanswered ? 'none' : 'auto')};
   }
 `;
 
@@ -183,10 +183,16 @@ const HomePage = () => {
   const [showToast, setShowToast] = useState(false);
   const [toastType, setToastType] = useState('');
 
-  const [correctCount, setCorrectCount] = useLocalStorageState('correctCount', () => 0);
-  console.log(correctCount);
-  const [wrongCount, setWrongCount] = useLocalStorageState('wrongCount', () => 0);  
-  const [totalCount, setTotalCount] = useLocalStorageState('totalCount', () => 0);
+  const [correctCount, setCorrectCount] = useLocalStorageState('correctCount', {
+    defaultValue: 0
+  });
+  const [wrongCount, setWrongCount] = useLocalStorageState('wrongCount', {
+    defaultValue: 0
+  });  
+  const [totalCount, setTotalCount] = useLocalStorageState('totalCount', {
+    defaultValue: 0
+  });
+
 
   if (error) return <div>Failed to load</div>;
   if (!quizData) return <div>Loading...</div>; 
@@ -295,14 +301,14 @@ const handleResetQuiz = async () => {
             key={index}
             onClick={() => handleOptionSelect(option)}
             disabled={quizData[currentQuestion].answered}
-            isAnswered={quizData[currentQuestion].answered}
+            isanswered={quizData[currentQuestion].answered}
             selected={selectedOption === option} 
           >
             {option}
           </Option>
         ))}
 
-        <CheckAnswerButton onClick={handleCheckAnswer} isAnswered={quizData[currentQuestion].answered}>
+        <CheckAnswerButton onClick={handleCheckAnswer} isanswered={quizData[currentQuestion].answered}>
           Check Answer
         </CheckAnswerButton>
       </QuizCard>
