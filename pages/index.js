@@ -184,6 +184,7 @@ const HomePage = () => {
   const [toastType, setToastType] = useState('');
 
   const [correctCount, setCorrectCount] = useLocalStorageState('correctCount', 0);
+  console.log(correctCount);
   const [wrongCount, setWrongCount] = useLocalStorageState('wrongCount', 0);  
   const [totalCount, setTotalCount] = useLocalStorageState('totalCount', 0);
 
