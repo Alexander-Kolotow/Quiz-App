@@ -3,74 +3,69 @@ import styled from 'styled-components';
 import useSWR from 'swr';
 import { mutate } from 'swr';
 
-
 const Container = styled.div`
+  position: relative;
+  margin-top: 50px;
   text-align: center;
   max-width: 800px;
   margin: auto;
-  background-color: #f8fbff; /* Ein etwas dunklerer Pastellton für den Container-Hintergrund */
+  background-color: #f8fbff;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Leichter Schatten für Tiefe */
+  box-shadow: 0 0 10px rgba(0,0,0,0.4);
 `;
 
 const ResetButton = styled.button`
-  padding: 10px 20px;
-  background-color: #996515; /* Dunkles Gelb für den Hintergrund */
-  color: white; /* Weißer Text für Kontrast */
+  padding: 5px 20px;
+  background-color: red;
+  color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 50%;
   cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s, transform 0.2s;
-
-  &:hover {
-    background-color: #cc9900; /* Helleres Gelb beim Hover für eine visuelle Rückmeldung */
-    transform: scale(1.05); /* Leichtes Vergrößern beim Darüberfahren */
-  }
-
-  &:active {
-    transform: scale(0.95); /* Kleiner Effekt beim Klicken */
-  }
+  font-size: 20px;
+  position: absolute;
+  top: 0;
+  left: 0;
 `;
 
-// CheckAnswerButton - Hervorgehoben für die Wichtigkeit der Aktion
 const CheckAnswerButton = styled.button`
   padding: 10px 20px;
-  background-color: #4CAF50; /* Grüne Farbe für "Go" oder "Check" Aktion */
-  color: white; /* Weißer Text für Kontrast */
+  background-color: #4CAF50; 
+  color: white; 
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
   transition: background-color 0.3s, transform 0.2s;
+  opacity: ${(props) => (props.answered ? 0.5 : 1)};
+  pointer-events: ${(props) => (props.answered ? 'none' : 'auto')};
 
   &:hover {
-    background-color: #43A047; /* Ein dunkleres Grün für den Hover-Effekt */
-    transform: scale(1.05); /* Leichtes Vergrößern beim Darüberfahren */
+    background-color: #43A047; 
+    transform: scale(1.05);
   }
 
   &:active {
-    transform: scale(0.95); /* Kleiner Effekt beim Klicken */
+    transform: scale(0.95);
   }
 `;
 const Header = styled.h1`
   font-size: 32px;
-  color: #217aff; /* Kräftigeres Blau für den Titel */
+  color: #217aff; 
   margin-bottom: 30px;
 `;
 
 const QuizCard = styled.div`
-  background-color: #ffffff; /* Weißer Hintergrund für die Quizkarten */
+  background-color: #ffffff; 
   border-radius: 8px;
   padding: 20px;
   margin-bottom: 30px;
-  box-shadow: 0 0 15px rgba(0,0,0,0.05); /* Feiner Schatten für eine subtile Tiefe */
+  box-shadow: 0 0 15px rgba(0,0,0,0.05);
 `;
 
 const Question = styled.h2`
-  font-size: 20px;
-  color: #217aff; /* Wieder das kräftigere Blau */
+  font-size: 25px;
+  color: #217aff; 
   margin-bottom: 20px;
 `;
 
@@ -78,21 +73,23 @@ const Option = styled.button`
   display: inline-block;
   margin: 10px;
   padding: 10px 20px;
-  background-color: whitesmoke; 
-  border: 2px solid #217aff; 
+  background-color: whitesmoke;
+  border: ${(props) => (props.selected && !props.answered ? '4px solid #006400' : '2px solid #217aff')};
   border-radius: 20px;
   cursor: pointer;
   font-size: 16px;
   transition: background-color 0.3s, transform 0.2s;
+  
 
   &:hover {
-    border: 2px solid #ff4a11;
-    transform: translateY(-5px); 
+    border: 4px solid #006400;
+    transform: translateY(-5px);
   }
 
   &:disabled {
     opacity: 0.5;
     cursor: default;
+    pointer-events: ${(props) => (props.answered ? 'none' : 'auto')};
   }
 `;
 
@@ -121,13 +118,13 @@ const NavigationButton = styled.button`
   }
 
   &:disabled {
-    background-color: #cccccc; /* Grau wenn deaktiviert */
+    background-color: #cccccc;
     opacity: 0.5;
     cursor: default;
   }
 `;
 
-// Funktion zum Datenholen
+
 const fetcher = (...args) => fetch(...args).then(res => res.json());
 
 const updateQuizStatus = async (id, answered) => {
@@ -250,13 +247,14 @@ const handleResetQuiz = async () => {
             key={index}
             onClick={() => handleOptionSelect(option)}
             disabled={quizData[currentQuestion].answered}
-            title={quizData[currentQuestion].answered ? "Already answered" : ""}
+            answered={quizData[currentQuestion].answered}
+            selected={selectedOption === option} 
           >
             {option}
           </Option>
         ))}
 
-        <CheckAnswerButton onClick={handleCheckAnswer} disabled={!selectedOption || quizData[currentQuestion].answered} title={quizData[currentQuestion].answered ? "Already answered" : ""}>
+        <CheckAnswerButton onClick={handleCheckAnswer} disabled={!selectedOption || quizData[currentQuestion].answered} answered={quizData[currentQuestion].answered}>
           Check Answer
         </CheckAnswerButton>
       </QuizCard>
