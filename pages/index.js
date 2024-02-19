@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import useSWR from 'swr';
 import { mutate } from 'swr';
+import useLocalStorageState from 'use-local-storage-state';
 
 const Container = styled.div`
   position: relative;
@@ -175,18 +176,19 @@ const resetQuizStatus = async () => {
 const HomePage = () => {
 
   const { data: quizData, error } = useSWR(`/api/quizzes`, fetcher);
+ 
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
   const [showToast, setShowToast] = useState(false);
   const [toastType, setToastType] = useState('');
 
-  const [correctCount, setCorrectCount] = useState(0);
-  const [wrongCount, setWrongCount] = useState(0);
-  const [totalCount, setTotalCount] = useState(0);
+  const [correctCount, setCorrectCount] = useLocalStorageState('correctCount', 0);
+  const [wrongCount, setWrongCount] = useLocalStorageState('wrongCount', 0);  
+  const [totalCount, setTotalCount] = useLocalStorageState('totalCount', 0);
 
   if (error) return <div>Failed to load</div>;
-  if (!quizData) return <div>Loading...</div>;
+  if (!quizData) return <div>Loading...</div>; 
 
   const handleOptionSelect = (option) => {
     if (!quizData[currentQuestion].answered) {
@@ -235,6 +237,11 @@ const HomePage = () => {
 const handleResetQuiz = async () => {
   const confirmReset = window.confirm('Are you sure you want to reset all Quiz Cards? Accordingly, your statistics will be reset to 0, and you will start the quiz from the beginning.');
   if (confirmReset) {
+
+    setCorrectCount(0);
+    setWrongCount(0);
+    setTotalCount(0);
+
     try {
       await resetQuizStatus();
       const updatedQuizData = quizData.map(quiz => ({ ...quiz, answered: false }));
