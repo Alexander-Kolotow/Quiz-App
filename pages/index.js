@@ -203,7 +203,7 @@ const HomePage = () => {
       
       const timer = setTimeout(() => {
         setShowConfetti(false);
-      }, 3000);
+      }, 10000);
   
       // Cleanup-Funktion, um den Timer zu löschen, falls die Komponente unmontiert wird
       return () => clearTimeout(timer);
