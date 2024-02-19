@@ -28,6 +28,19 @@ const ResetButton = styled.button`
   left: 0;
 `;
 
+const StatsContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  padding: 15px;
+`;
+
+const Stat = styled.div`
+  margin: 0 10px;
+  font-size: 20px;
+  color: black;
+`;
+
 const CheckAnswerButton = styled.button`
   padding: 10px 20px;
   background-color: #4CAF50; 
@@ -168,6 +181,10 @@ const HomePage = () => {
   const [showToast, setShowToast] = useState(false);
   const [toastType, setToastType] = useState('');
 
+  const [correctCount, setCorrectCount] = useState(0);
+  const [wrongCount, setWrongCount] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
+
   if (error) return <div>Failed to load</div>;
   if (!quizData) return <div>Loading...</div>;
 
@@ -181,23 +198,39 @@ const HomePage = () => {
     const correctAnswerIndex = quizData[currentQuestion].correctOption;
     const correctAnswer = quizData[currentQuestion].options[correctAnswerIndex];
   
+    let isCorrect = false;
     if (selectedOption === correctAnswer) {
       setShowToast(true);
       setToastType('correct');
+      setCorrectCount(correctCount + 1);
+      isCorrect = true;
     } else {
       setShowToast(true);
       setToastType('wrong');
+      setWrongCount(wrongCount + 1);
     }
+    setTotalCount(totalCount + 1);
+  
+    // Setzen des answered Zustands für die aktuelle Frage auf true, bevor die Netzwerkanfrage gesendet wird
+    const updatedQuizData = [...quizData];
+    updatedQuizData[currentQuestion].answered = true;
+    // Aktualisieren des lokalen Zustands sofort, um die UI zu reflektieren
+    mutate(`/api/quizzes`, updatedQuizData, false); 
+  
     try {
+      // Netzwerkanfrage, um den answered Zustand im Backend zu aktualisieren
       await updateQuizStatus(quizData[currentQuestion]._id, true);
-      const updatedQuizData = [...quizData];
-      updatedQuizData[currentQuestion].answered = true; 
-    
-      mutate(`/api/quizzes`, updatedQuizData, false); 
+      // Kein erneuter Aufruf von mutate() notwendig, da der Zustand bereits aktualisiert wurde
     } catch (error) {
       console.error("Failed to update quiz status", error);
+      // Optional: Rückgängig machen der Zustandsänderung im Fehlerfall
+      updatedQuizData[currentQuestion].answered = false;
+      mutate(`/api/quizzes`, updatedQuizData, false);
     }
+  
+    return isCorrect;
   };
+  
 
 const handleResetQuiz = async () => {
   const confirmReset = window.confirm('Are you sure you want to reset all Quiz Cards? Accordingly, your statistics will be reset to 0, and you will start the quiz from the beginning.');
@@ -235,7 +268,14 @@ const handleResetQuiz = async () => {
     <Container>
       <ResetButton onClick={handleResetQuiz}>&#10227;</ResetButton>
 
-      <Header>My Quiz App</Header>
+      <Header>My Quiz App
+      <StatsContainer>
+        <Stat>✅  {correctCount}</Stat>
+        <Stat>❌  {wrongCount}</Stat>
+        <Stat>Total: {totalCount}</Stat>
+      </StatsContainer>
+      </Header>
+
 
       {showToast && <Toast type={toastType}>{toastType === 'correct' ? 'Correct!' : 'Wrong!'}</Toast>}
 
@@ -254,7 +294,7 @@ const handleResetQuiz = async () => {
           </Option>
         ))}
 
-        <CheckAnswerButton onClick={handleCheckAnswer} disabled={!selectedOption || quizData[currentQuestion].answered} answered={quizData[currentQuestion].answered}>
+        <CheckAnswerButton onClick={handleCheckAnswer} /*disabled={!selectedOption || quizData[currentQuestion].answered}*/ answered={quizData[currentQuestion].answered}>
           Check Answer
         </CheckAnswerButton>
       </QuizCard>
