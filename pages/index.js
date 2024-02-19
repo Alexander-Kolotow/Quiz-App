@@ -205,14 +205,14 @@ const HomePage = () => {
     if (selectedOption === correctAnswer) {
       setShowToast(true);
       setToastType('correct');
-      setCorrectCount(correctCount + 1);
+      setCorrectCount((currentCount) => currentCount + 1);
       isCorrect = true;
     } else {
       setShowToast(true);
       setToastType('wrong');
-      setWrongCount(wrongCount + 1);
+      setWrongCount((currentCount) => currentCount + 1);
     }
-    setTotalCount(totalCount + 1);
+    setTotalCount((currentCount) => currentCount + 1);
   
     // Setzen des answered Zustands für die aktuelle Frage auf true, bevor die Netzwerkanfrage gesendet wird
     const updatedQuizData = [...quizData];
