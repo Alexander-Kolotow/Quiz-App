@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import useSWR from 'swr';
 import { mutate } from 'swr';
 import useLocalStorageState from 'use-local-storage-state';
+import Confetti from 'react-confetti';
 
 const Container = styled.div`
   position: relative;
@@ -193,9 +194,26 @@ const HomePage = () => {
     defaultValue: 0
   });
 
+  const [showConfetti, setShowConfetti] = useState(false);
 
+  useEffect(() => {
+    if (totalCount === 20) {
+      setShowConfetti(true);
+  
+      
+      const timer = setTimeout(() => {
+        setShowConfetti(false);
+      }, 3000);
+  
+      // Cleanup-Funktion, um den Timer zu löschen, falls die Komponente unmontiert wird
+      return () => clearTimeout(timer);
+    }
+  }, [totalCount]); 
+  
   if (error) return <div>Failed to load</div>;
   if (!quizData) return <div>Loading...</div>; 
+
+  
 
   const handleOptionSelect = (option) => {
     if (!quizData[currentQuestion].answered) {
@@ -278,8 +296,11 @@ const handleResetQuiz = async () => {
     }
   };
 
+  
+
   return (
     <Container>
+      {showConfetti && <Confetti width={window.innerWidth} height={window.innerHeight} />}
       <ResetButton onClick={handleResetQuiz}>&#10227;</ResetButton>
 
       <Header>My Quiz App
