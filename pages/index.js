@@ -278,8 +278,8 @@ const handleResetQuiz = async () => {
 
       <Header>My Quiz App
       <StatsContainer>
-        <Stat>✅  {correctCount}</Stat>
-        <Stat>❌  {wrongCount}</Stat>
+        <Stat>✅: {correctCount}</Stat>
+        <Stat>❌: {wrongCount}</Stat>
         <Stat>Total: {totalCount}</Stat>
       </StatsContainer>
       </Header>
@@ -302,7 +302,7 @@ const handleResetQuiz = async () => {
           </Option>
         ))}
 
-        <CheckAnswerButton onClick={handleCheckAnswer} /*disabled={!selectedOption || quizData[currentQuestion].answered}*/ answered={quizData[currentQuestion].answered}>
+        <CheckAnswerButton onClick={handleCheckAnswer} answered={quizData[currentQuestion].answered}>
           Check Answer
         </CheckAnswerButton>
       </QuizCard>
