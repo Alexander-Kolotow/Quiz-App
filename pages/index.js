@@ -4,6 +4,7 @@ import useSWR, { mutate } from 'swr';
 import useLocalStorageState from 'use-local-storage-state';
 import Confetti from 'react-confetti';
 
+
 const fetcher = (...args) => fetch(...args).then(res => res.json());
 
 const updateQuizStatus = async (id, answered) => {
@@ -37,6 +38,8 @@ const resetQuizStatus = async () => {
 
   return response.json();
 };
+
+
 
 const HomePage = () => {
 
@@ -74,7 +77,7 @@ const HomePage = () => {
     }
   }, [totalCount]); 
   
-  if (error) return <div>Failed to load</div>;
+  if (error) return <div role="alert">Failed to load</div>;
   if (!quizData) return <div>Loading...</div>;
 
   const handleOptionSelect = (option) => {
@@ -166,10 +169,10 @@ const handleResetQuiz = async () => {
   return (
     <Container>
       {showConfetti && <Confetti width={window.innerWidth} height={window.innerHeight} />}
-      <ResetButton onClick={handleResetQuiz}>&#10227;</ResetButton>
+      <ResetButton onClick={handleResetQuiz} aria-label="Reset quiz">&#10227;</ResetButton>
 
       <Header>My Quiz App
-      <StatsContainer>
+      <StatsContainer aria-live="polite">
         <Stat>✅: {correctCount}</Stat>
         <Stat>❌: {wrongCount}</Stat>
         <Stat>&sum;: {totalCount}</Stat>
@@ -177,18 +180,20 @@ const handleResetQuiz = async () => {
       </Header>
 
 
-      {showToast && <Toast type={toastType}>{toastType === 'correct' ? 'Correct!' : 'Wrong!'}</Toast>}
+      {showToast && <Toast type={toastType} aria-live="assertive">{toastType === 'correct' ? 'Correct!' : 'Wrong!'}</Toast>}
 
-      <QuizCard>
-        <Question>{quizData[currentQuestion]?.question}</Question>
+      <QuizCard as="section" tabIndex="-1">
+        <Question as="h2">{quizData[currentQuestion]?.question}</Question>
 
         {quizData[currentQuestion]?.options.map((option, index) => (
           <Option
             key={index}
             onClick={() => handleOptionSelect(option)}
-            disabled={quizData[currentQuestion].answered}
+            aria-disabled={quizData[currentQuestion].answered}
             isanswered={quizData[currentQuestion].answered}
-            selected={selectedOption === option} 
+            selected={selectedOption === option}
+            role="button" // Zugänglichkeit: Rolle hinzugefügt
+            tabIndex={0} // Tastaturzugänglichkeit: Fokus hinzugefügt
           >
             {option}
           </Option>
@@ -200,10 +205,10 @@ const handleResetQuiz = async () => {
       </QuizCard>
 
       <div>
-        <NavigationButton onClick={handlePreviousQuestion} disabled={currentQuestion === 0 || isOptionSelected}>
+        <NavigationButton onClick={handlePreviousQuestion} disabled={currentQuestion === 0 || isOptionSelected} aria-label="Previous question">
          &larr;
         </NavigationButton>
-        <NavigationButton onClick={handleNextQuestion} disabled={currentQuestion >= quizData.length - 1 || isOptionSelected}>
+        <NavigationButton onClick={handleNextQuestion} disabled={currentQuestion >= quizData.length - 1 || isOptionSelected} aria-label="Next question">
          &rarr;
         </NavigationButton>
       </div>
