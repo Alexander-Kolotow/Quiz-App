@@ -1,4 +1,7 @@
-# New Next Project
+### My Quiz App
+
+For further practice after the bootcamp, I decided to build a quiz app. Tech stack: HTML, CSS, JavaScript, React, Next.js, Node.js, MongoDB, Styled Components. Deployment: Vercel.
+
 
 ### Local Development
 
