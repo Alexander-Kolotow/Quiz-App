@@ -183,6 +183,7 @@ const HomePage = () => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [showToast, setShowToast] = useState(false);
   const [toastType, setToastType] = useState('');
+  const [isOptionSelected, setIsOptionSelected] = useState(false);
 
   const [correctCount, setCorrectCount] = useLocalStorageState('correctCount', {
     defaultValue: 0
@@ -218,6 +219,7 @@ const HomePage = () => {
   const handleOptionSelect = (option) => {
     if (!quizData[currentQuestion].answered) {
       setSelectedOption(option);
+      setIsOptionSelected(true);
     }
   };
 
@@ -254,7 +256,9 @@ const HomePage = () => {
       updatedQuizData[currentQuestion].answered = false;
       mutate(`/api/quizzes`, updatedQuizData, false);
     }
-  
+    
+    setIsOptionSelected(false);
+
     return isCorrect;
   };
   
@@ -335,10 +339,10 @@ const handleResetQuiz = async () => {
       </QuizCard>
 
       <div>
-        <NavigationButton onClick={handlePreviousQuestion} disabled={currentQuestion === 0}>
+        <NavigationButton onClick={handlePreviousQuestion} disabled={currentQuestion === 0 || isOptionSelected}>
          &larr;
         </NavigationButton>
-        <NavigationButton onClick={handleNextQuestion} disabled={currentQuestion >= quizData.length - 1}>
+        <NavigationButton onClick={handleNextQuestion} disabled={currentQuestion >= quizData.length - 1 || isOptionSelected}>
          &rarr;
         </NavigationButton>
       </div>
