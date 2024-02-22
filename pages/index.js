@@ -195,10 +195,12 @@ const handleResetQuiz = async () => {
             {option}
           </Option>
         ))}
-
+        
+        {selectedOption && (
         <CheckAnswerButton onClick={handleCheckAnswer} isanswered={quizData[currentQuestion].answered}>
           Check Answer
         </CheckAnswerButton>
+        )} 
       </QuizCard>
 
       <div>
