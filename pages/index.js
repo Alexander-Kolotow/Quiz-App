@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { Container, Header, StatsContainer, Stat, ResetButton, QuizCard, Question, Option, CheckAnswerButton, NavigationButton, Toast } from '../quizstyles/quizStyles';
 import useSWR, { mutate } from 'swr';
 import useLocalStorageState from 'use-local-storage-state';
 import Confetti from 'react-confetti';
+import SkeletonQuizCard from '../quizstyles/quizSkeleton';
 
 
 const fetcher = (...args) => fetch(...args).then(res => res.json());
@@ -40,8 +41,13 @@ const resetQuizStatus = async () => {
 };
 
 const HomePage = () => {
+  const [isClient, setIsClient] = useState(false);
 
-  const { data: quizData, error } = useSWR(`/api/quizzes`, fetcher);
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  const { data: quizData, error } = useSWR(`/api/quizzes`, fetcher, { suspense: true });
  
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -66,7 +72,6 @@ const HomePage = () => {
     if (totalCount === 20) {
       setShowConfetti(true);
   
-      
       const timer = setTimeout(() => {
         setShowConfetti(false);
       }, 10000);
@@ -76,7 +81,10 @@ const HomePage = () => {
   }, [totalCount]); 
   
   if (error) return <div>Failed to load</div>;
-  if (!quizData) return <div>Loading...</div>; 
+  //if (!quizData) return <div>Loading...</div>;
+  if (!isClient) {
+    return <Container>Loading...</Container>;
+  }
 
   
 
@@ -163,7 +171,6 @@ const handleResetQuiz = async () => {
     }
   };
 
-  
 
   return (
     <Container>
@@ -181,6 +188,7 @@ const handleResetQuiz = async () => {
 
       {showToast && <Toast type={toastType}>{toastType === 'correct' ? 'Correct!' : 'Wrong!'}</Toast>}
 
+      <Suspense fallback={<SkeletonQuizCard />}>
       <QuizCard>
         <Question>{quizData[currentQuestion]?.question}</Question>
 
@@ -202,7 +210,7 @@ const handleResetQuiz = async () => {
         </CheckAnswerButton>
         )} 
       </QuizCard>
-
+      </Suspense>
       <div>
         <NavigationButton onClick={handlePreviousQuestion} disabled={currentQuestion === 0 || isOptionSelected}>
          &larr;
