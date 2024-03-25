@@ -36,7 +36,6 @@ const SkeletonQuizCard = () => (
     <Option></Option><SkeletonBar width="80%" />
     <Option></Option><SkeletonBar width="60%" />
     <Option></Option><SkeletonBar width="90%" />
-    {/* Du kannst die Breite anpassen, um die Vielfalt in den Optionen zu simulieren */}
   </SkeletonWrapper>
 );
 
