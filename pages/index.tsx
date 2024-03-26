@@ -6,9 +6,9 @@ import Confetti from 'react-confetti';
 import SkeletonQuizCard from '../quizstyles/quizSkeleton';
 
 
-const fetcher = (...args) => fetch(...args).then(res => res.json());
+const fetcher = (...args: [string, RequestInit?]) => fetch(...args).then(res => res.json());
 
-const updateQuizStatus = async (id, answered) => {
+const updateQuizStatus = async (id: string, answered: boolean) => {
   
   const response = await fetch(`/api/quizzes/${id}`, {
     method: 'PATCH',
@@ -48,7 +48,6 @@ const HomePage = () => {
   }, []);
 
   const { data: quizData, error } = useSWR(`/api/quizzes`, fetcher, { suspense: true });
- 
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
@@ -81,10 +80,10 @@ const HomePage = () => {
   }, [totalCount]); 
   
   if (error) return <div>Failed to load</div>;
-  //if (!quizData) return <div>Loading...</div>;
-  if (!isClient) {
+  
+  /*if (!isClient) {
     return <Container>Loading...</Container>;
-  }
+  }*/
 
   
 
