@@ -1,5 +1,14 @@
 import styled from 'styled-components';
 
+type OptionProps = {
+  selected: boolean;
+  isanswered: boolean;
+};
+
+type CheckAnswerButtonProps = {
+  isanswered: boolean;
+};
+
 export const Container = styled.div`
   position: relative;
   margin-top: 50px;
@@ -38,7 +47,7 @@ export const Stat = styled.div`
   color: black;
 `;
 
-export const CheckAnswerButton = styled.button`
+export const CheckAnswerButton = styled.button<CheckAnswerButtonProps>`
   padding: 10px 20px;
   background-color: #4CAF50; 
   color: white; 
@@ -80,7 +89,7 @@ export const Question = styled.h2`
   margin-bottom: 20px;
 `;
 
-export const Option = styled.button`
+export const Option = styled.button<OptionProps>`
   display: inline-block;
   margin: 10px;
   padding: 10px 20px;
@@ -104,8 +113,8 @@ export const Option = styled.button`
   }
 `;
 
-export const Toast = styled.div`
-  background-color: ${(props) => (props.type === 'correct' ? '#4CAF50' : '#F44336')};
+export const Toast = styled.div<{ toastType: 'correct' | 'wrong' }>`
+  background-color: ${(props) => (props.toastType === 'correct' ? '#4CAF50' : '#F44336')};
   color: white;
   padding: 10px;
   border-radius: 5px;

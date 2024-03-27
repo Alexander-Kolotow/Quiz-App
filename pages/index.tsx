@@ -47,12 +47,21 @@ const HomePage = () => {
     setIsClient(true);
   }, []);
 
-  const { data: quizData, error } = useSWR(`/api/quizzes`, fetcher, { suspense: true });
+  interface Quiz {
+    _id: string;
+    question: string;
+    options: string[];
+    selectedOption: string | null;
+    correctOption: number;
+    answered: boolean;
+  }
+  
+  const { data: quizData, error } = useSWR<Quiz[]>(`/api/quizzes`, fetcher, { suspense: true });
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
   const [showToast, setShowToast] = useState(false);
-  const [toastType, setToastType] = useState('');
+  const [toastType, setToastType] = useState<'correct' | 'wrong' | ''>('');
   const [isOptionSelected, setIsOptionSelected] = useState(false);
 
   const [correctCount, setCorrectCount] = useLocalStorageState('correctCount', {
@@ -87,7 +96,7 @@ const HomePage = () => {
 
   
 
-  const handleOptionSelect = (option) => {
+  const handleOptionSelect = (option: string) => {
     if (!quizData[currentQuestion].answered) {
       setSelectedOption(option);
       setIsOptionSelected(true);
@@ -185,7 +194,10 @@ const handleResetQuiz = async () => {
       </Header>
 
 
-      {showToast && <Toast type={toastType}>{toastType === 'correct' ? 'Correct!' : 'Wrong!'}</Toast>}
+      {showToast && (toastType === 'correct' || toastType === 'wrong') && (
+  <Toast toastType={toastType}>{toastType === 'correct' ? 'Correct!' : 'Wrong!'}</Toast>
+)}
+
 
       <Suspense fallback={<SkeletonQuizCard />}>
       <QuizCard>
