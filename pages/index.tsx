@@ -208,15 +208,15 @@ const handleResetQuiz = async () => {
             key={index}
             onClick={() => handleOptionSelect(option)}
             disabled={quizData[currentQuestion].answered}
-            isanswered={quizData[currentQuestion].answered}
-            selected={selectedOption === option} 
+            $isanswered={quizData[currentQuestion].answered}
+            $selected={selectedOption === option} 
           >
             {option}
           </Option>
         ))}
         
         {selectedOption && (
-        <CheckAnswerButton onClick={handleCheckAnswer} isanswered={quizData[currentQuestion].answered}>
+        <CheckAnswerButton onClick={handleCheckAnswer} $isanswered={quizData[currentQuestion].answered}>
           Check Answer
         </CheckAnswerButton>
         )} 

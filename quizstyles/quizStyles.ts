@@ -1,12 +1,12 @@
 import styled from 'styled-components';
 
 type OptionProps = {
-  selected: boolean;
-  isanswered: boolean;
+  $selected: boolean;
+  $isanswered: boolean;
 };
 
 type CheckAnswerButtonProps = {
-  isanswered: boolean;
+  $isanswered: boolean;
 };
 
 export const Container = styled.div`
@@ -56,8 +56,8 @@ export const CheckAnswerButton = styled.button<CheckAnswerButtonProps>`
   cursor: pointer;
   font-size: 16px;
   transition: background-color 0.3s, transform 0.2s;
-  opacity: ${(props) => (props.isanswered ? 0.5 : 1)};
-  pointer-events: ${(props) => (props.isanswered ? 'none' : 'auto')};
+  opacity: ${(props) => (props.$isanswered ? 0.5 : 1)};
+  pointer-events: ${(props) => (props.$isanswered ? 'none' : 'auto')};
 
   &:hover {
     background-color: #43A047; 
@@ -94,7 +94,7 @@ export const Option = styled.button<OptionProps>`
   margin: 10px;
   padding: 10px 20px;
   background-color: whitesmoke;
-  border: ${(props) => (props.selected && !props.isanswered ? '4px solid #006400' : '2px solid #217aff')};
+  border: ${(props) => (props.$selected && !props.$isanswered ? '4px solid #006400' : '2px solid #217aff')};
   border-radius: 20px;
   cursor: pointer;
   font-size: 16px;
@@ -109,7 +109,7 @@ export const Option = styled.button<OptionProps>`
   &:disabled {
     opacity: 0.5;
     cursor: default;
-    pointer-events: ${(props) => (props.isanswered ? 'none' : 'auto')};
+    pointer-events: ${(props) => (props.$isanswered ? 'none' : 'auto')};
   }
 `;
 
