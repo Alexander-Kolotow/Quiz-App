@@ -15,7 +15,7 @@
     "eslint-config-next": "13.4.8",
     "http-proxy-middleware": "^2.0.6",
     "mongoose": "^8.1.2",
-    "next": "^14.1.0",
+    "next": "^14.1.4",
     "next-connect": "^1.0.0",
     "nextjs-cors": "^2.2.0",
     "react": "^18.2.0",
