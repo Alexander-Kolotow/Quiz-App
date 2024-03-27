@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, Suspense} from 'react';
 import { Container, Header, StatsContainer, Stat, ResetButton, QuizCard, Question, Option, CheckAnswerButton, NavigationButton, Toast } from '../quizstyles/quizStyles';
 import useSWR, { mutate } from 'swr';
 import useLocalStorageState from 'use-local-storage-state';
@@ -90,9 +90,9 @@ const HomePage = () => {
   
   if (error) return <div>Failed to load</div>;
   
-  /*if (!isClient) {
+  if (!isClient) {
     return <Container>Loading...</Container>;
-  }*/
+  }
 
   
 
