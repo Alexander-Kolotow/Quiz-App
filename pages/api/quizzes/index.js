@@ -9,7 +9,9 @@ export default async function handler(req, res) {
     case 'GET':
       try {
         const quizzes = await Quiz.find({});
-        res.status(200).json(quizzes);
+
+        const modifiedQuizzes = quizzes.map(({ correctOption, ...rest }) => rest);
+        res.status(200).json(modifiedQuizzes);
       } catch (error) {
         res.status(500).json({ message: "Fehler beim Abrufen der Quizze", error: error.message });
       }

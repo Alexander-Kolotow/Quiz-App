@@ -108,40 +108,55 @@ const HomePage = () => {
   };
 
   const handleCheckAnswer = async () => {
-    const correctAnswerIndex = quizData[currentQuestion].correctOption;
-    const correctAnswer = quizData[currentQuestion].options[correctAnswerIndex];
+  // Index der ausgewählten Option ermitteln
+    const selectedOptionIndex = quizData[currentQuestion].options.indexOf(selectedOption);
   
-    let isCorrect = false;
-    if (selectedOption === correctAnswer) {
-      setShowToast(true);
-      setToastType('correct');
-      setCorrectCount((correctCount) => correctCount + 1);
-      isCorrect = true;
-    } else {
-      setShowToast(true);
-      setToastType('wrong');
-      setWrongCount((wrongCount) => wrongCount + 1);
-    }
-    setTotalCount((totalCount) => totalCount + 1);
-  
-    const updatedQuizData = [...quizData];
-    updatedQuizData[currentQuestion].answered = true;
-    
-    mutate(`/api/quizzes`, updatedQuizData, false); 
-    
     try {
+      // Senden der ausgewählten Antwort an das Backend zur Überprüfung
+      const response = await fetch(`/api/quizzes/verify-answer`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          quizId: quizData[currentQuestion]._id,
+          selectedOptionIndex: selectedOptionIndex,
+        }),
+      });
+  
+      const result = await response.json();
+  
+      // Überprüfen, ob die Antwort korrekt war basierend auf der Backend-Antwort
+      if (result.isCorrect) {
+        setShowToast(true);
+        setToastType('correct');
+        setCorrectCount((correctCount) => correctCount + 1);
+      } else {
+        setShowToast(true);
+        setToastType('wrong');
+        setWrongCount((wrongCount) => wrongCount + 1);
+      }
+  
+      setTotalCount((totalCount) => totalCount + 1);
+  
+      // Markieren des aktuellen Quiz als beantwortet
+      const updatedQuizData = [...quizData];
+      updatedQuizData[currentQuestion].answered = true;
+  
+      // Aktualisieren des Quiz-Status in der lokalen Zustandsverwaltung und im Backend
+      mutate(`/api/quizzes`, updatedQuizData, false);
       await updateQuizStatus(quizData[currentQuestion]._id, true);
+  
       checkAllQuizzesAnswered();
     } catch (error) {
-      console.error("Failed to update quiz status", error);
-      
+      console.error("Failed to verify answer or update quiz status", error);
+      // Bei einem Fehler, stellen Sie sicher, dass das aktuelle Quiz nicht fälschlicherweise als beantwortet markiert wird
+      const updatedQuizData = [...quizData];
       updatedQuizData[currentQuestion].answered = false;
       mutate(`/api/quizzes`, updatedQuizData, false);
     }
-    
+  
     setIsOptionSelected(false);
-
-    return isCorrect;
   };
   
 
@@ -203,28 +218,32 @@ const handleResetQuiz = async () => {
 )}
 
 
-      <Suspense fallback={<SkeletonQuizCard />}>
-      <QuizCard>
-        <Question>{quizData[currentQuestion]?.question}</Question>
-
-        {quizData[currentQuestion]?.options.map((option, index) => (
-          <Option
-            key={index}
-            onClick={() => handleOptionSelect(option)}
-            disabled={quizData[currentQuestion].answered}
-            $isanswered={quizData[currentQuestion].answered}
-            $selected={selectedOption === option} 
-          >
-            {option}
-          </Option>
-        ))}
-        
-        {selectedOption && (
-        <CheckAnswerButton onClick={handleCheckAnswer} $isanswered={quizData[currentQuestion].answered}>
-          Check Answer
-        </CheckAnswerButton>
-        )} 
-      </QuizCard>
+<Suspense fallback={<SkeletonQuizCard />}>
+          <QuizCard>
+          {quizData && quizData.length > 0 && (
+            <>
+              <Question>{quizData[currentQuestion]?.question}</Question>
+              {quizData[currentQuestion] && quizData[currentQuestion].options ? (
+                quizData[currentQuestion].options.map((option, index) => (
+                  <Option
+                    key={index}
+                    onClick={() => handleOptionSelect(option)}
+                    disabled={quizData[currentQuestion].answered}
+                    $isanswered={quizData[currentQuestion].answered}
+                    $selected={selectedOption === option}
+                  >
+                    {option}
+                  </Option>
+                ))
+              ) : null}
+              {selectedOption && (
+                <CheckAnswerButton onClick={handleCheckAnswer} $isanswered={quizData[currentQuestion]?.answered}>
+                  Check Answer
+                </CheckAnswerButton>
+              )}
+            </>
+          )}
+        </QuizCard>
       </Suspense>
       <div>
         <NavigationButton onClick={handlePreviousQuestion} disabled={currentQuestion === 0 || isOptionSelected}>
