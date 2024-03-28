@@ -1,9 +1,10 @@
-import React, { useState, useEffect, Suspense} from 'react';
+import React, { useState, useEffect, Suspense, use} from 'react';
 import { Container, Header, StatsContainer, Stat, ResetButton, QuizCard, Question, Option, CheckAnswerButton, NavigationButton, Toast } from '../quizstyles/quizStyles';
 import useSWR, { mutate } from 'swr';
 import useLocalStorageState from 'use-local-storage-state';
 import Confetti from 'react-confetti';
 import SkeletonQuizCard from '../quizstyles/quizSkeleton';
+import { set } from 'mongoose';
 
 
 const fetcher = (...args: [string, RequestInit?]) => fetch(...args).then(res => res.json());
@@ -76,17 +77,22 @@ const HomePage = () => {
 
   const [showConfetti, setShowConfetti] = useState(false);
 
+  const checkAllQuizzesAnswered = () => {
+
+  const allAnswered = quizData.every(quiz => quiz.answered);
+  setShowConfetti(allAnswered);
+  };
+ 
   useEffect(() => {
-    if (totalCount === 20) {
-      setShowConfetti(true);
-  
+    if (showConfetti) {
       const timer = setTimeout(() => {
         setShowConfetti(false);
       }, 10000);
-  
+
       return () => clearTimeout(timer);
     }
-  }, [totalCount]); 
+  }, [showConfetti]);
+
   
   if (error) return <div>Failed to load</div>;
   
@@ -124,11 +130,10 @@ const HomePage = () => {
     updatedQuizData[currentQuestion].answered = true;
     
     mutate(`/api/quizzes`, updatedQuizData, false); 
-  
+    
     try {
-      
       await updateQuizStatus(quizData[currentQuestion]._id, true);
-      
+      checkAllQuizzesAnswered();
     } catch (error) {
       console.error("Failed to update quiz status", error);
       
@@ -149,7 +154,7 @@ const handleResetQuiz = async () => {
     setCorrectCount(0);
     setWrongCount(0);
     setTotalCount(0);
-
+    
     try {
       await resetQuizStatus();
       const updatedQuizData = quizData.map(quiz => ({ ...quiz, answered: false }));
@@ -157,6 +162,7 @@ const handleResetQuiz = async () => {
       setCurrentQuestion(0);
       setSelectedOption(null);
       setShowToast(false);
+      setShowConfetti(false);
     } catch (error) {
       console.error("Failed to reset quiz status", error);
     }
