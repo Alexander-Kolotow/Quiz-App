@@ -4,8 +4,6 @@ import useSWR, { mutate } from 'swr';
 import useLocalStorageState from 'use-local-storage-state';
 import Confetti from 'react-confetti';
 import SkeletonQuizCard from '../quizstyles/quizSkeleton';
-import { set } from 'mongoose';
-
 
 const fetcher = (...args: [string, RequestInit?]) => fetch(...args).then(res => res.json());
 
