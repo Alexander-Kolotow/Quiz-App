@@ -113,7 +113,7 @@ const HomePage = () => {
   
     try {
       // Senden der ausgewählten Antwort an das Backend zur Überprüfung
-      const response = await fetch(`/api/quizzes/verify-answer`, {
+      const response = await fetch(`/api/quizzes/verify-answer/verify-answer`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

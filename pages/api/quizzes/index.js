@@ -10,7 +10,11 @@ export default async function handler(req, res) {
       try {
         const quizzes = await Quiz.find({});
 
-        const modifiedQuizzes = quizzes.map(({ correctOption, ...rest }) => rest);
+        const modifiedQuizzes = quizzes.map(quiz => {
+          const quizObject = quiz.toObject();
+          delete quizObject.correctOption; // Entfernen der correctOption
+          return quizObject;
+        });
         res.status(200).json(modifiedQuizzes);
       } catch (error) {
         res.status(500).json({ message: "Fehler beim Abrufen der Quizze", error: error.message });
