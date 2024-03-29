@@ -108,11 +108,11 @@ const HomePage = () => {
   };
 
   const handleCheckAnswer = async () => {
-  // Index der ausgewählten Option ermitteln
+  
     const selectedOptionIndex = quizData[currentQuestion].options.indexOf(selectedOption);
   
     try {
-      // Senden der ausgewählten Antwort an das Backend zur Überprüfung
+      
       const response = await fetch(`/api/quizzes/verify-answer/verify-answer`, {
         method: 'POST',
         headers: {
@@ -200,8 +200,9 @@ const handleResetQuiz = async () => {
 
 
   return (
+    <>
+    {showConfetti && <Confetti width={window.innerWidth} height={window.innerHeight} />} 
     <Container>
-      {showConfetti && <Confetti width={window.innerWidth} height={window.innerHeight} />}
       <ResetButton onClick={handleResetQuiz}>&#10227;</ResetButton>
 
       <Header>My Quiz App
@@ -254,6 +255,7 @@ const handleResetQuiz = async () => {
         </NavigationButton>
       </div>
     </Container>
+    </>
   );
 };
 
