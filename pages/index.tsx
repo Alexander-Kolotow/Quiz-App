@@ -206,7 +206,7 @@ const handleResetQuiz = async () => {
     <>
       {showConfetti && <Confetti width={window.innerWidth} height={window.innerHeight} />}
       <Container fluid>
-        <Row>
+        <Row className="justify-content-center text-center">
           <Col xs={12}>
             <ResetButton onClick={handleResetQuiz}>&#10227;</ResetButton>
             <Header>My Quiz App</Header>
@@ -217,7 +217,7 @@ const handleResetQuiz = async () => {
             </StatsContainer>
           </Col>
         </Row>
-        <Row>
+        <Row className="justify-content-center text-center">
           <Col xs={12}>
             {showToast && (toastType === 'correct' || toastType === 'wrong') && (
               <Toast toastType={toastType}>{toastType === 'correct' ? 'Correct!' : 'Wrong!'}</Toast>
@@ -251,8 +251,8 @@ const handleResetQuiz = async () => {
             </Suspense>
           </Col>
         </Row>
-        <Row>
-          <Col xs={12}>
+        <Row className="justify-content-center">
+          <Col xs={12} className="text-center">
             <div>
               <NavigationButton onClick={handlePreviousQuestion} disabled={currentQuestion === 0 || isOptionSelected}>
                 &larr;
@@ -265,7 +265,7 @@ const handleResetQuiz = async () => {
         </Row>
       </Container>
     </>
-  );
+  );  
 };
 
 export default HomePage;
