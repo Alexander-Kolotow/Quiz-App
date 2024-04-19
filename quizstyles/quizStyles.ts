@@ -9,7 +9,7 @@ type CheckAnswerButtonProps = {
   $isanswered: boolean;
 };
 
-export const Container = styled.div`
+/*export const QuizContainer = styled.div`
   position: relative;
   margin-top: 50px;
   text-align: center;
@@ -19,7 +19,7 @@ export const Container = styled.div`
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0,0,0,0.4);
-`;
+`;*/
 
 export const ResetButton = styled.button`
   padding: 5px 20px;

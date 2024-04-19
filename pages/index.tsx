@@ -1,9 +1,12 @@
 import React, { useState, useEffect, Suspense, use} from 'react';
-import { Container, Header, StatsContainer, Stat, ResetButton, QuizCard, Question, Option, CheckAnswerButton, NavigationButton, Toast } from '../quizstyles/quizStyles';
+import { Header, StatsContainer, Stat, ResetButton, QuizCard, Question, Option, CheckAnswerButton, NavigationButton, Toast } from '../quizstyles/quizStyles';
 import useSWR, { mutate } from 'swr';
 import useLocalStorageState from 'use-local-storage-state';
 import Confetti from 'react-confetti';
 import SkeletonQuizCard from '../quizstyles/quizSkeleton';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Container, Row, Col } from 'react-bootstrap';
+
 
 const fetcher = (...args: [string, RequestInit?]) => fetch(...args).then(res => res.json());
 
@@ -201,60 +204,66 @@ const handleResetQuiz = async () => {
 
   return (
     <>
-    {showConfetti && <Confetti width={window.innerWidth} height={window.innerHeight} />} 
-    <Container>
-      <ResetButton onClick={handleResetQuiz}>&#10227;</ResetButton>
-
-      <Header>My Quiz App
-      <StatsContainer>
-        <Stat>✅: {correctCount}</Stat>
-        <Stat>❌: {wrongCount}</Stat>
-        <Stat>&sum;: {totalCount}</Stat>
-      </StatsContainer>
-      </Header>
-
-
-      {showToast && (toastType === 'correct' || toastType === 'wrong') && (
-  <Toast toastType={toastType}>{toastType === 'correct' ? 'Correct!' : 'Wrong!'}</Toast>
-)}
-
-
-<Suspense fallback={<SkeletonQuizCard />}>
-          <QuizCard>
-          {quizData && quizData.length > 0 && (
-            <>
-              <Question>{quizData[currentQuestion]?.question}</Question>
-              {quizData[currentQuestion] && quizData[currentQuestion].options ? (
-                quizData[currentQuestion].options.map((option, index) => (
-                  <Option
-                    key={index}
-                    onClick={() => handleOptionSelect(option)}
-                    disabled={quizData[currentQuestion].answered}
-                    $isanswered={quizData[currentQuestion].answered}
-                    $selected={selectedOption === option}
-                  >
-                    {option}
-                  </Option>
-                ))
-              ) : null}
-              {selectedOption && (
-                <CheckAnswerButton onClick={handleCheckAnswer} $isanswered={quizData[currentQuestion]?.answered}>
-                  Check Answer
-                </CheckAnswerButton>
-              )}
-            </>
-          )}
-        </QuizCard>
-      </Suspense>
-      <div>
-        <NavigationButton onClick={handlePreviousQuestion} disabled={currentQuestion === 0 || isOptionSelected}>
-         &larr;
-        </NavigationButton>
-        <NavigationButton onClick={handleNextQuestion} disabled={currentQuestion >= quizData.length - 1 || isOptionSelected}>
-         &rarr;
-        </NavigationButton>
-      </div>
-    </Container>
+      {showConfetti && <Confetti width={window.innerWidth} height={window.innerHeight} />}
+      <Container fluid>
+        <Row>
+          <Col xs={12}>
+            <ResetButton onClick={handleResetQuiz}>&#10227;</ResetButton>
+            <Header>My Quiz App</Header>
+            <StatsContainer>
+              <Stat>✅: {correctCount}</Stat>
+              <Stat>❌: {wrongCount}</Stat>
+              <Stat>&sum;: {totalCount}</Stat>
+            </StatsContainer>
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={12}>
+            {showToast && (toastType === 'correct' || toastType === 'wrong') && (
+              <Toast toastType={toastType}>{toastType === 'correct' ? 'Correct!' : 'Wrong!'}</Toast>
+            )}
+            <Suspense fallback={<SkeletonQuizCard />}>
+              <QuizCard>
+                {quizData && quizData.length > 0 && (
+                  <>
+                    <Question>{quizData[currentQuestion]?.question}</Question>
+                    {quizData[currentQuestion] && quizData[currentQuestion].options ? (
+                      quizData[currentQuestion].options.map((option, index) => (
+                        <Option
+                          key={index}
+                          onClick={() => handleOptionSelect(option)}
+                          disabled={quizData[currentQuestion].answered}
+                          $isanswered={quizData[currentQuestion].answered}
+                          $selected={selectedOption === option}
+                        >
+                          {option}
+                        </Option>
+                      ))
+                    ) : null}
+                    {selectedOption && (
+                      <CheckAnswerButton onClick={handleCheckAnswer} $isanswered={quizData[currentQuestion]?.answered}>
+                        Check Answer
+                      </CheckAnswerButton>
+                    )}
+                  </>
+                )}
+              </QuizCard>
+            </Suspense>
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={12}>
+            <div>
+              <NavigationButton onClick={handlePreviousQuestion} disabled={currentQuestion === 0 || isOptionSelected}>
+                &larr;
+              </NavigationButton>
+              <NavigationButton onClick={handleNextQuestion} disabled={currentQuestion >= quizData.length - 1 || isOptionSelected}>
+                &rarr;
+              </NavigationButton>
+            </div>
+          </Col>
+        </Row>
+      </Container>
     </>
   );
 };
