@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Suspense, use} from 'react';
-import { Header, StatsContainer, Stat, ResetButton, QuizCard, Question, Option, CheckAnswerButton, NavigationButton, Toast } from '../quizstyles/quizStyles';
+import { QuizContainer, Header, StatsContainer, Stat, ResetButton, QuizCard, Question, Option, CheckAnswerButton, NavigationButton, Toast } from '../quizstyles/quizStyles';
 import useSWR, { mutate } from 'swr';
 import useLocalStorageState from 'use-local-storage-state';
 import Confetti from 'react-confetti';
@@ -206,6 +206,7 @@ const handleResetQuiz = async () => {
     <>
       {showConfetti && <Confetti width={window.innerWidth} height={window.innerHeight} />}
       <Container fluid>
+        <QuizContainer> 
         <Row className="justify-content-center text-center">
           <Col xs={12}>
             <ResetButton onClick={handleResetQuiz}>&#10227;</ResetButton>
@@ -263,6 +264,7 @@ const handleResetQuiz = async () => {
             </div>
           </Col>
         </Row>
+        </QuizContainer>
       </Container>
     </>
   );  

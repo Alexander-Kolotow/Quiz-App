@@ -9,20 +9,25 @@ type CheckAnswerButtonProps = {
   $isanswered: boolean;
 };
 
-/*export const QuizContainer = styled.div`
+export const QuizContainer = styled.div`
   position: relative;
-  margin-top: 50px;
+  margin: 200px;
   text-align: center;
-  max-width: 800px;
-  margin: auto;
   background-color: #f8fbff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.4);
-`;*/
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.7);
+
+  @media (max-width: 600px) {
+    margin: 30px;  
+    padding: 60px;     
+    border-radius: 10px;
+  }
+`;
 
 export const ResetButton = styled.button`
   padding: 5px 20px;
+  margin: 10px;
   background-color: red;
   color: white;
   border: none;
@@ -48,7 +53,7 @@ export const Stat = styled.div`
 `;
 
 export const CheckAnswerButton = styled.button<CheckAnswerButtonProps>`
-  padding: 10px 20px;
+  padding: 5px 15px;
   background-color: #4CAF50; 
   color: white; 
   border: none;
