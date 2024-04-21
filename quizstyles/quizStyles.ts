@@ -111,7 +111,7 @@ export const Option = styled.button<OptionProps>`
   }
 
   &:disabled {
-    opacity: 0.5;
+    filter: blur(3px);
     cursor: default;
     pointer-events: ${(props) => (props.$isanswered ? 'none' : 'auto')};
   }
