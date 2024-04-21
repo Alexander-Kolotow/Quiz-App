@@ -209,7 +209,7 @@ const handleResetQuiz = async () => {
         <QuizContainer> 
         <Row className="justify-content-center text-center">
           <Col xs={12}>
-            <ResetButton onClick={handleResetQuiz}>&#10227;</ResetButton>
+            <ResetButton className="btn btn-block btn-danger" onClick={handleResetQuiz}>&#10227;</ResetButton>
             <Header>My Quiz App</Header>
             <StatsContainer>
               <Stat>✅: {correctCount}</Stat>

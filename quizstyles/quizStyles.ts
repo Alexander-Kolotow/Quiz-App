@@ -19,8 +19,8 @@ export const QuizContainer = styled.div`
   box-shadow: 0 0 10px rgba(0,0,0,0.7);
 
   @media (max-width: 600px) {
-    margin: 30px;  
-    padding: 60px;     
+    margin: 10px;  
+    padding: 45px;     
     border-radius: 10px;
   }
 `;
@@ -28,7 +28,6 @@ export const QuizContainer = styled.div`
 export const ResetButton = styled.button`
   padding: 5px 20px;
   margin: 10px;
-  background-color: red;
   color: white;
   border: none;
   border-radius: 50%;
