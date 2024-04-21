@@ -242,7 +242,7 @@ const handleResetQuiz = async () => {
                       ))
                     ) : null}
                     {selectedOption && (
-                      <CheckAnswerButton onClick={handleCheckAnswer} $isanswered={quizData[currentQuestion]?.answered}>
+                      <CheckAnswerButton className="btn btn-block btn-success" onClick={handleCheckAnswer} disabled={quizData[currentQuestion].answered} $isanswered={quizData[currentQuestion]?.answered}>
                         Check Answer
                       </CheckAnswerButton>
                     )}

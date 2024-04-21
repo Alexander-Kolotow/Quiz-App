@@ -28,7 +28,6 @@ export const QuizContainer = styled.div`
 export const ResetButton = styled.button`
   padding: 5px 20px;
   margin: 10px;
-  color: white;
   border: none;
   border-radius: 50%;
   cursor: pointer;
@@ -53,15 +52,14 @@ export const Stat = styled.div`
 
 export const CheckAnswerButton = styled.button<CheckAnswerButtonProps>`
   padding: 5px 15px;
-  background-color: #4CAF50; 
-  color: white; 
   border: none;
   border-radius: 5px;
-  cursor: pointer;
   font-size: 16px;
-  transition: background-color 0.3s, transform 0.2s;
-  opacity: ${(props) => (props.$isanswered ? 0.5 : 1)};
-  pointer-events: ${(props) => (props.$isanswered ? 'none' : 'auto')};
+
+  &:disabled {
+    filter: blur(3px);
+    pointer-events: ${(props) => (props.$isanswered ? 'none' : 'auto')};
+  }
 
   &:hover {
     background-color: #43A047; 
@@ -100,7 +98,6 @@ export const Option = styled.button<OptionProps>`
   background-color: whitesmoke;
   border: ${(props) => (props.$selected && !props.$isanswered ? '4px solid #006400' : '2px solid #217aff')};
   border-radius: 20px;
-  cursor: pointer;
   font-size: 16px;
   transition: background-color 0.3s, transform 0.2s;
   
@@ -112,7 +109,6 @@ export const Option = styled.button<OptionProps>`
 
   &:disabled {
     filter: blur(3px);
-    cursor: default;
     pointer-events: ${(props) => (props.$isanswered ? 'none' : 'auto')};
   }
 `;
@@ -133,7 +129,6 @@ export const NavigationButton = styled.button`
   color: white;
   border: none;
   border-radius: 5px;
-  cursor: pointer;
   font-size: 16px;
   transition: background-color 0.3s;
 
@@ -144,6 +139,5 @@ export const NavigationButton = styled.button`
   &:disabled {
     background-color: #cccccc;
     opacity: 0.5;
-    cursor: default;
   }
 `;
