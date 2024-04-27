@@ -125,17 +125,10 @@ export const Toast = styled.div<{ toastType: 'correct' | 'wrong' }>`
 export const NavigationButton = styled.button`
   margin: 0 10px;
   padding: 10px 20px;
-  background-color: #FFD700;
-  color: white;
   border: none;
   border-radius: 5px;
   font-size: 16px;
-  transition: background-color 0.3s;
-
-  &:hover {
-    background-color: #CC9900;
-  }
-
+  
   &:disabled {
     background-color: #cccccc;
     opacity: 0.5;

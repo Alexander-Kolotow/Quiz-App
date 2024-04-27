@@ -255,10 +255,10 @@ const handleResetQuiz = async () => {
         <Row className="justify-content-center">
           <Col xs={12} className="text-center">
             <div>
-              <NavigationButton onClick={handlePreviousQuestion} disabled={currentQuestion === 0 || isOptionSelected}>
+              <NavigationButton className="btn btn-block btn-warning" onClick={handlePreviousQuestion} disabled={currentQuestion === 0 || isOptionSelected}>
                 &larr;
               </NavigationButton>
-              <NavigationButton onClick={handleNextQuestion} disabled={currentQuestion >= quizData.length - 1 || isOptionSelected}>
+              <NavigationButton className="btn btn-block btn-warning" onClick={handleNextQuestion} disabled={currentQuestion >= quizData.length - 1 || isOptionSelected}>
                 &rarr;
               </NavigationButton>
             </div>
