@@ -173,8 +173,6 @@ const handleResetQuiz = async () => {
     
     try {
       await resetQuizStatus();
-      //const updatedQuizData = quizData.map(quiz => ({ ...quiz, answered: false }));
-      //mutate(`/api/quizzes`, updatedQuizData, false);
       mutate(`/api/quizzes`);
       setCurrentQuestion(0);
       setSelectedOption(null);
