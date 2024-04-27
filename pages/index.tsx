@@ -166,15 +166,16 @@ const HomePage = () => {
 const handleResetQuiz = async () => {
   const confirmReset = window.confirm('Are you sure you want to reset all Quiz Cards? Accordingly, your statistics will be reset to 0, and you will start the quiz from the beginning.');
   if (confirmReset) {
-
+    
     setCorrectCount(0);
     setWrongCount(0);
     setTotalCount(0);
     
     try {
       await resetQuizStatus();
-      const updatedQuizData = quizData.map(quiz => ({ ...quiz, answered: false }));
-      mutate(`/api/quizzes`, updatedQuizData, false);
+      //const updatedQuizData = quizData.map(quiz => ({ ...quiz, answered: false }));
+      //mutate(`/api/quizzes`, updatedQuizData, false);
+      mutate(`/api/quizzes`);
       setCurrentQuestion(0);
       setSelectedOption(null);
       setShowToast(false);
